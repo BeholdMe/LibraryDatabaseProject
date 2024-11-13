@@ -23,8 +23,8 @@ CREATE TABLE BORROWER
 CREATE TABLE BOOK
 (
     Book_id INTEGER PRIMARY KEY,
-    Title VARCHAR(32),
-    Publisher_name VARCHAR(32),
+    Title VARCHAR(64),
+    Publisher_name VARCHAR(64),
     FOREIGN KEY (Publisher_name) REFERENCES PUBLISHER(Publisher_name)
 );
 
