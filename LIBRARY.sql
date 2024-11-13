@@ -25,7 +25,6 @@ CREATE TABLE BOOK
     Book_id INTEGER PRIMARY KEY,
     Title VARCHAR(32),
     Publisher_name VARCHAR(32),
-    Phone CHAR(12),
     FOREIGN KEY (Publisher_name) REFERENCES PUBLISHER(Publisher_name)
 );
 
@@ -36,7 +35,7 @@ CREATE TABLE BOOK_LOANS
     Card_no INTEGER,
     Date_out CHAR(12),
     Due_date CHAR(12),
-    Returned_date CHAR(12)
+    Returned_date CHAR(12),
     FOREIGN KEY (Book_id) REFERENCES BOOK(Book_id),
     FOREIGN KEY (Branch_id) REFERENCES LIBRARY_BRANCH(Branch_id),
     FOREIGN KEY (Card_no) REFERENCES BORROWER(Card_no),
