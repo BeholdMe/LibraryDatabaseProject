@@ -38,7 +38,6 @@ CREATE TABLE BOOK_LOANS
     Returned_date CHAR(12),
     FOREIGN KEY (Book_id) REFERENCES BOOK(Book_id),
     FOREIGN KEY (Branch_id) REFERENCES LIBRARY_BRANCH(Branch_id),
-    FOREIGN KEY (Card_no) REFERENCES BORROWER(Card_no),
     FOREIGN KEY (Card_no) REFERENCES BORROWER(Card_no)
 );
 
