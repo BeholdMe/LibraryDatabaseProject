@@ -32,13 +32,12 @@ INSERT INTO LIBRARY_BRANCH(Branch_name, Branch_address)
 VALUES('UTA Branch', '123 Cooper St, Arlington TX 76101');
 
 -- Question 5: Return all Books that were loaned between March 5, 2022 until March 23, 2022. List Book title and Branch name, and how many days it was borrowed for. [10 points]
-SELECT B.Title AS Book_title, LB.Branch_name, 
-JULIANDAY(BL.Returned_date) - JULIANDAY(BL.Date_out) AS Days_borrowed
+SELECT B.Title AS Book_title, LB.Branch_name,
+(DATE(BL.Returned_date) - DATE(BL.Date_out)) AS Days_Borrowed
 FROM BOOK_LOANS BL
 JOIN BOOK B ON BL.Book_id = B.Book_id
 JOIN LIBRARY_BRANCH LB ON BL.Branch_id = LB.Branch_id
-WHERE BL.Date_out BETWEEN '2022-03-05' AND '2022-03-23'
-AND BL.Returned_date IS NOT NULL;
+WHERE BL.Date_out BETWEEN '2022-03-05' AND '2022-03-23' AND BL.Returned_date IS NOT NULL;
 
 -- Question 6: Return a List borrower names, that have books not returned. [3 points]
 SELECT BO.Name AS Borrower_name
@@ -46,18 +45,17 @@ FROM BORROWER BO
 JOIN BOOK_LOANS BL ON BO.Card_no = BL.Card_no
 WHERE BL.Returned_date IS NULL;
 
---Question 7: Create a report that will return all branches with the number of books borrowed per branch separated by if they have been returned, still borrowed, or late. [15 points]
 SELECT LB.Branch_name,
     SUM(CASE 
         WHEN BL.Returned_date IS NOT NULL THEN 1
         ELSE 0 
     END) AS Returned_books,
     SUM(CASE 
-        WHEN BL.Returned_date IS NULL AND JULIANDAY(BL.Due_date) >= JULIANDAY(CURRENT_DATE) THEN 1
+        WHEN BL.Returned_date IS NULL AND DATE(BL.Due_date) >= DATE(CURRENT_DATE) THEN 1
         ELSE 0 
     END) AS Borrowed_books,
     SUM(CASE 
-        WHEN BL.Returned_date IS NULL AND JULIANDAY(BL.Due_date) < JULIANDAY(CURRENT_DATE) THEN 1
+        WHEN BL.Returned_date IS NULL AND DATE(BL.Due_date) < DATE(CURRENT_DATE) THEN 1
         ELSE 0 
     END) AS Late_books
 FROM LIBRARY_BRANCH LB
@@ -65,16 +63,17 @@ JOIN BOOK_LOANS BL ON LB.Branch_id = BL.Branch_id
 GROUP BY LB.Branch_name;
 
 --Question 8: List all the books (title) and the maximum number of days that they were borrowed. [15 points]
-SELECT B.Title AS Book_title, MAX(JULIANDAY(BL.Returned_date) - JULIANDAY(BL.Date_out)) AS Maximum_days_borrowed
+SELECT B.Title AS Book_title, MAX(DATE(BL.Returned_date) - DATE(BL.Date_out)) AS Maximum_days_borrowed
 FROM BOOK B
 JOIN BOOK_LOANS BL ON B.Book_id = BL.Book_id
 WHERE BL.Returned_date IS NOT NULL
 GROUP BY B.Title;
 
 --Question 9: Create a report for Ethan Martinez with all the books they borrowed. List the book title and author. Also, calculate the number of days each book was borrowed for and if any book is late being returned. Order the results by the date_out. [6 points]
-SELECT B.Title AS Book_title, BA.Author_name, JULIANDAY(BL.Returned_date) - JULIANDAY(BL.Date_out) AS Days_borrowed,
+SELECT B.Title AS Book_title, BA.Author_name, 
+    (DATE(BL.Returned_date) - DATE(BL.Date_out)) AS Days_borrowed,
     CASE 
-        WHEN JULIANDAY(BL.Due_date) < JULIANDAY(CURRENT_DATE) AND BL.Returned_date IS NULL THEN 'Late'
+        WHEN DATE(BL.Due_date) < DATE(CURRENT_DATE) AND BL.Returned_date IS NULL THEN 'Late'
         ELSE 'On Time'
     END AS Return_status
 FROM BORROWER BO
